@@ -1,0 +1,64 @@
+FWM2<-read.csv("FW_master_2016_foranalysis.csv",  header = T)
+summary(FWM)
+str(FWM)
+head(FWM)
+levels(FWM)
+# Clean up all variables, Fix date, Omit incomplete data (na for trt, spp), subset only living seedlings / exclude ht=0; merge with excloser-level data
+#Fix DamClass from dates to percentages
+
+#data dictionary
+#island: guam, saipan, tinian, rota
+
+#Change to Lowercase and replace some silly things
+FWM$island <- gsub("Tinian", "tinian",FWM$island)
+levels(FWM$island)
+
+FWM$island<-as.factor(tolower(FWM$island))
+FWM$spp<-as.factor(tolower(FWM$spp))
+FWM$site<-as.factor(tolower(FWM$site))
+FWM$trt<-as.factor(tolower(FWM$trt))
+FWM$wilt<-as.factor(tolower(FWM$wilt))
+FWM$primdam<-as.factor(tolower(FWM$primdam))
+FWM$secdam<-as.factor(tolower(FWM$secdam))
+
+FWM$site<-as.factor(trimws(FWM$site))
+FWM$island<-as.factor(trimws(FWM$island))
+FWM$wilt<-as.factor(trimws(FWM$wilt))
+
+FWM$site <- gsub("ANAOarray", "anaoarray",FWM$site)
+FWM$trt <- gsub("excl", "ecl",FWM$trt)
+
+FWM$col <- gsub("A", "a",FWM$col)
+FWM$col <- gsub("B", "b",FWM$col)
+FWM$col <- gsub("C", "c",FWM$col)
+
+FWM$damclass <- gsub("2-5", "5-Feb",FWM$damclass)     #These don't seem to work
+FWM$damclass <- gsub("5-10", "10-May",FWM$damclass) #I don't know why they don't work
+FWM$damclass <- gsub("10-25", "25-Oct",FWM$damclass)
+
+#We only want living seeds?
+
+
+#Omit NA's
+FWM$row <- gsub("NA", "", FWM$row)
+FWM$primdam <- gsub("na", "", FWM$primdam)
+FWM$primdam <- gsub("NA", "", FWM$primdam)
+FWM$secdam <- gsub("na", "", FWM$secdam)
+FWM$secdam <- gsub("NA", "", FWM$secdam)
+FWM$row <- gsub("NA", "", FWM$row)
+
+#JK apparently keep NAs in, although now I'm not sure how to fix this
+na.strings = c("", " ")
+na.strings=c(""," ","NA", FWM)
+
+#Fix date
+
+FWM$startdate<-as.character(FWM$date)
+FWM$startdate<-as.Date(as.character(FWM$startdate), "%d-%b-%y")
+summary(FWM)
+
+#Delete extra columns in R
+
+FWM$year <- NULL 
+FWM$startdate2 <- NULL
+summary(FWM)
